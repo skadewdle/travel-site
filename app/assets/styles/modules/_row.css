@@ -20,6 +20,13 @@
         width: 37%;
       }
     } 
+
+    &__medium-half {
+      float: left;
+      width: calc((100% - 100px) / 2);
+
+    }
+
     &__medium-2 {
       width: 66.66%;
       float: left;
@@ -34,6 +41,15 @@
         &:not(:last-child) {
           padding-right: 65px;
         }
+      }
+    }
+
+    &--gutter-wide {
+      &:first-child {
+        margin-right: 50px;
+      }
+      &:last-child {
+        margin-left: 50px;
       }
     }
   } 
