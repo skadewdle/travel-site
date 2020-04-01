@@ -1,6 +1,9 @@
 .row {
-
   @mixin clearfix {};
+
+  &--tpadding {
+    padding-top: 80px;
+  }
 
   &__bmargin-until-medium {
     margin-bottom: 1rem;
@@ -8,12 +11,14 @@
 
   @mixin atMedium {
 
+
+
     &__bmargin-until-medium {
       margin-bottom: 0;
     }
 
     &__medium-1 {
-      width: 33.33%;
+      width: calc(100% / 3);
       float: left;
 
       &--larger {
@@ -52,5 +57,72 @@
         margin-left: 50px;
       }
     }
-  } 
+
+
+  }
+  
+  
+  @mixin atLarge {
+
+
+
+    &__bmargin-until-large {
+      margin-bottom: 0;
+    }
+
+    &__large-1 {
+      width: calc(100% / 3);
+      float: left;
+
+      &--larger {
+        width: 37%;
+      }
+    } 
+
+    &__large-half {
+      float: left;
+      width: calc((100% - 100px) / 2);
+
+    }
+
+    &__large-2 {
+      width: 66.66%;
+      float: left;
+      
+      &--smaller {
+        width: 63%;
+      }
+    }
+  
+    &--gutter {
+      div {
+        &:not(:last-child) {
+          padding-right: 65px;
+        }
+      }
+    }
+
+    &--gutter-wide {
+      &:first-child {
+        margin-right: 50px;
+      }
+      &:last-child {
+        margin-left: 50px;
+      }
+    }
+
+
+  }
+
+  &--equal-height-at-medium {
+    @mixin atMedium {
+      display: flex;
+    }
+  }
+
+  &--equal-height-at-large {
+    @mixin atLarge {
+      display: flex;
+    }
+  }
 }
