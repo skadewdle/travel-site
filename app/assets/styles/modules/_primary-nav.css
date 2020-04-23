@@ -43,8 +43,13 @@
     padding: 5px 8px;
     background-color: rgba($mainBlue, .5);
 
+
     @mixin atMedium {
       background-color: transparent;
+      transition: color .3s ease-out;
+      &.is-current-link {
+        color: #FABB69
+      }
     }
   }
 }
