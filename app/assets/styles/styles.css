@@ -15,4 +15,6 @@
 @import './modules/_testimonial';
 @import './modules/_site-footer';
 @import './modules/_site-header';
-@import './modules/_reveal-item'
+@import './modules/_reveal-item';
+@import './modules/_modal.css';
+@import './modules/_social-icons'
