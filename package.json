@@ -4,13 +4,21 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "webpack-dev-server --open",
-    "build": "webpack --mode production"
+    "build": "webpack"
   },
   "dependencies": {
+    "@babel/core": "^7.9.0",
+    "@babel/preset-env": "^7.9.5",
     "autoprefixer": "^9.7.5",
+    "babel-loader": "^8.1.0",
+    "clean-webpack-plugin": "^3.0.0",
     "css-loader": "^3.4.2",
+    "cssnano": "^4.1.10",
+    "fs-extra": "^9.0.0",
+    "html-webpack-plugin": "^4.2.0",
     "lazysizes": "^5.2.0",
     "lodash": "^4.17.15",
+    "mini-css-extract-plugin": "^0.9.0",
     "normalize.css": "^8.0.1",
     "postcss-calc": "^7.0.2",
     "postcss-hexrgba": "^2.0.0",

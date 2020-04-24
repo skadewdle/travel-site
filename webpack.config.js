@@ -1,4 +1,9 @@
-const path = require('path');
+const currentTask = process.env.npm_lifecycle_event
+const { CleanWebpackPlugin } = require('clean-webpack-plugin')
+const MiniCSSExtractPlugin = require('mini-css-extract-plugin')
+const HTMLWebpackPlugin = require('html-webpack-plugin')
+const path = require('path')
+const fse = require('fs-extra')
 const postCSSPlugins = [
   require('postcss-import'),
   require('postcss-mixins'),
@@ -9,29 +14,50 @@ const postCSSPlugins = [
   require('autoprefixer')
 ]
 
-module.exports = {
-  entry: './app/assets/scripts/App.js',
-  
-  output: {
-    filename: 'bundle.js',
-    path: path.resolve(__dirname, 'app')
-  },
+class RunAfterCompile {
+  apply (compiler) {
+    compiler.hooks.done.tap('Copy Images', () => {
+      fse.copySync('./app/assets/images', './docs/assets/images')
+    })
+  }
+}
 
+let cssConfig = {
+  test: /\.css$/i,
+  use: [
+      'css-loader?url=false', {
+      loader: 'postcss-loader',
+      options: { plugins: postCSSPlugins }
+    }
+  ]
+}
+
+let pages = fse.readdirSync('./app').filter(file => {
+  return file.endsWith('.html')
+}).map(page => {
+  return new HTMLWebpackPlugin({
+    filename: page,
+    template: `./app/${page}`
+  })
+})
+
+let config = {
+  entry: './app/assets/scripts/App.js',
+  plugins: pages,
   module: {
     rules: [
-      {
-        test: /\.css$/i,
-        use: [
-          'style-loader', 'css-loader?url=false', {
-            loader: 'postcss-loader',
-            options: { plugins: postCSSPlugins }
-          }
-        ]
-      }
+      cssConfig
     ]
-  },
+  }
+}
 
-  devServer: {
+if (currentTask == 'dev') {
+  cssConfig.use.unshift('style-loader')
+  config.output = {
+    filename: 'bundle.js',
+    path: path.resolve(__dirname, 'app')
+  }
+  config.devServer = {
     before: (app, server) => {
       server._watch('./app/**/*.html')
     },
@@ -40,4 +66,34 @@ module.exports = {
     port: 3000,
     host: '0.0.0.0'
   }
+  config.mode = 'development'
 }
+
+if (currentTask == 'build') {
+  cssConfig.use.unshift(MiniCSSExtractPlugin.loader)
+  postCSSPlugins.push(require('cssnano'))
+  config.output = {
+    filename: '[name].[chunkhash].js',
+    chunkFilename: '[name].[chunkhash].js',
+    path: path.resolve(__dirname, 'docs')
+  }
+  config.mode = 'production',
+  config.optimization = { splitChunks: { chunks: 'all' } }
+  config.plugins.push(
+    new CleanWebpackPlugin(),
+    new MiniCSSExtractPlugin({ filename: 'styles.[chunkhash].css' }),
+    new RunAfterCompile()
+  )
+  config.module.rules.push({
+    test: /\.js$/,
+    exclude: /(node_modules)/,
+    use: {
+      loader: 'babel-loader',
+      options: {
+        presets: [ '@babel/preset-env' ]
+      }
+    }
+  })
+}
+
+module.exports = config
