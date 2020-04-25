@@ -46,7 +46,17 @@ let config = {
   plugins: pages,
   module: {
     rules: [
-      cssConfig
+      cssConfig,
+      {
+        test: /\.js$/,
+        exclude: /(node_modules)/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: [ '@babel/preset-react' ,'@babel/preset-env' ]
+          }
+        }
+      }
     ]
   }
 }
@@ -84,16 +94,6 @@ if (currentTask == 'build') {
     new MiniCSSExtractPlugin({ filename: 'styles.[chunkhash].css' }),
     new RunAfterCompile()
   )
-  config.module.rules.push({
-    test: /\.js$/,
-    exclude: /(node_modules)/,
-    use: {
-      loader: 'babel-loader',
-      options: {
-        presets: [ '@babel/preset-env' ]
-      }
-    }
-  })
 }
 
 module.exports = config
